@@ -20,7 +20,7 @@ class TestJsonValidator(unittest.TestCase):
                 data = json.load(data_file)
 
                 # Look for the 'AWSTemplateFormatVersion' key.
-                self.assertEqual(data['AWSTemplateFormatVersion'], '2011-09-09')
+                self.assertEqual(data['AWSTemplateFormatVersion'], '2010-09-09')
 
                 # Examine the CloudFormation 'Outputs' - expect these keys.
                 self.assertItemsEqual(data['Outputs'].keys(),
