@@ -7,9 +7,7 @@ before_deploy:
   - pip install -r requirements.txt
 deploy:
   provider: script
-  script:
-    - aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION
-    - echo fooo
+  script: scripts/deploy.sh
   # put commit hash into file
   # on:
   #   branch: release
