@@ -8,7 +8,6 @@ before_deploy:
 deploy:
   provider: script
   script:
-    - echo 'starting deploy'
     - aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION
   # put commit hash into file
   # on:
