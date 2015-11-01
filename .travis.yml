@@ -19,3 +19,4 @@ deploy:
 # Notify.
 notifications:
   email: false
+  slack: $LIGGAT_SLACK
