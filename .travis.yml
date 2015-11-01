@@ -7,6 +7,6 @@ script:
   - python test.py
 deploy:
   provider: script
-  script: deploy.sh
+  script: "aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION"
   on:
     branch: release
