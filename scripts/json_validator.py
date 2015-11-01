@@ -15,7 +15,7 @@ class TestJsonValidator(unittest.TestCase):
                 # Parse the template => fails if invalid JSON.
                 data = json.load(data_file)
 
-                # Look for the AWSTemplateFormatVersion key.
+                # Look for the 'AWSTemplateFormatVersion' key.
                 self.assertEqual(data['AWSTemplateFormatVersion'], '2010-09-09')
 
                 # Examine the CloudFormation 'Outputs' - expect these keys.
