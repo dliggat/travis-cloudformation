@@ -2,12 +2,11 @@ language: python
 python:
   - "2.7"
 script:
-  - python test.py
+  - python scripts/json_validator.py
 before_deploy:
   - pip install -r requirements.txt
 deploy:
   provider: script
   script: scripts/deploy.sh
-  # put commit hash into file
-  # on:
-  #   branch: release
+  on:
+    branch: release
