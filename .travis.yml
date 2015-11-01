@@ -7,6 +7,6 @@ script:
   - python test.py
 deploy:
   provider: script
-  script: deploy.sh
+  script: "echo 'hello this is a deploy'"
   # on:
   #   branch: release
