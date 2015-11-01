@@ -19,7 +19,7 @@ deploy:
 # Notify.
 notifications:
   email: true
-  # slack:
-  #   rooms:
-  #     - $LIGGAT_SLACK
-  #   on_success: always
+  slack:
+    rooms:
+      - $LIGGAT_SLACK
+    on_success: always
