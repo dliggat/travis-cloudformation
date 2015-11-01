@@ -1,8 +1,11 @@
+# Test.
 language: python
 python:
   - '2.7'
 script:
   - python scripts/json_validator.py
+
+# Deploy.
 before_deploy:
   - pip install -r requirements.txt
 deploy:
@@ -10,6 +13,12 @@ deploy:
   script: scripts/deploy.sh
   on:
     branch: release
+
+# Notify.
 notifications:
+  email: false
   slack:
     secure: aDYqdeJpw9DLUIzBdkwCwfdm5r24DGU63JYz0DuxoVifNT7NZz7zt+StRssq94jUzO2PgmziWJK+RXXY0RtDr3DyS6MSMrZlW5vilIZx+ymM9XIoieZyev+ZyckmqEe/fGUDlEa8T7yTNIVGQgRx+cqkDiUM4Sn805sLVCQxiyBzUUzc70fnJLTFqahMAoxaq3wf1qgChf2iZ/jSZbKk/bLcmi/EXa05nZPR6N/bTlhS6EZNTCJBDDlyg62eGH7yal71p6PUqOufZvcMuLLN+i+9Gcelj1uUmu+3VkQtdYe2lZ8ff2sV4KSfKKIkwYFhgzPoV5JgvH2FS42pduwU1+IoAXGjMry6NL59fY/QK8FcsWSfTg6YtspWqhV0HYBcEszXTcXhHgQZ6HaqijiwnMSSw7VBU5WnOIiRRjmKkfFkkgYIlabdexeUjtwLvh5+ontd3WAaYg9RYqiRdLBkKrW78ZLevJUN2vdtQWh2s075BsZeS2ddskLpRlsHRMVzosTAGJqfxBvk43Twy9EoRt+qaOM1fdEI+aHXt94TSyKUB2EmzWLyNT63iWeERwh+6ui2A+FlOFS4G0PzgiW49OzNFf8jqOCpr+C+XD/SzbmB3T3uJj6hKfkw/dKuvKT3jiGbC5+/z9o5eM2jlQetGUBo49MBFmCccCUR3z0LvuQ=
+    on_success: change
+    on_failure: always
+    on_start: never
