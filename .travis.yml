@@ -1,7 +1,12 @@
 language: python
 python:
   - "2.7"
-install:
+before_deploy:
   - pip install -r requirements.txt
 script:
   - python test.py
+deploy:
+  script:
+    - aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION
+  on:
+    branch: release
