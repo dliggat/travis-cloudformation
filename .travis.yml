@@ -18,4 +18,8 @@ deploy:
 
 # Notify.
 notifications:
-  email: false
+  email: true
+  slack:
+    rooms:
+      - $LIGGAT_SLACK
+    on_success: always
