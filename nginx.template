@@ -1,0 +1,155 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "Spin up a basic nginx instance",
+
+  "Parameters" : {
+      "SSHKey" : {
+        "Type" : "String",
+        "Default" : "gsg-keypair",
+        "Description" : "Specify the name of the SSH keypair to use for configuring SSH access to the application node so you can connect to it and configure it once it is launched. Check the EC2 Console to find an appropriate SSH key for the region you're launching this stack into. You must have access to the private key (.pem file)."
+      },
+      "InstanceType" : {
+        "Type" : "String",
+        "Default" : "m3.medium",
+        "Description" : "Instance type."
+      },
+      "InstanceName" : {
+        "Type" : "String",
+        "Default" : "travis-cloudformation",
+        "Description" : "Instance name"
+      }
+    },
+
+  "Mappings" : {
+
+    "mapConfig" : {
+      "WebNode" : {
+          "LinuxAmi" : "ami-d5c5d1e5"
+      }
+    }
+  },
+
+  "Resources" : {
+    "Ec2Instance" : {
+      "Type" : "AWS::EC2::Instance",
+      "Metadata" : {
+        "AWS::CloudFormation::Init" : {
+          "configSets" : {
+            "full_install" : [ "install_cfn", "install_other" ]
+          },
+          "install_cfn" : {
+            "files" : {
+              "/etc/cfn/cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackId" }, "\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.Ec2Instance.Metadata.AWS::CloudFormation::Init\n",
+                  "action=/opt/aws/bin/cfn-init -v ",
+                  "         --stack ", { "Ref" : "AWS::StackName" },
+                  "         --resource Ec2Instance ",
+                  "         --configsets full_install ",
+                  "         --region ", { "Ref" : "AWS::Region" }, "\n",
+                  "runas=root\n"
+                ]]}
+              }
+            },
+
+            "services" : {
+              "sysvinit" : {
+                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                              "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+              }
+            }
+          },
+
+          "install_other" : {
+            "packages" : {
+              "yum" : {
+                "git"   : [],
+                "nginx" : []
+              }
+            }
+          }
+        }
+      },
+      "Properties" : {
+        "SecurityGroups" : [ { "Ref" : "WebSecurityGroup" } ],
+        "KeyName" : { "Ref" : "SSHKey" },
+        "Tags" : [
+          {
+            "Key"   : "Name",
+            "Value" : { "Ref" : "InstanceName" }
+          }
+        ],
+        "InstanceType" : { "Ref" : "InstanceType" },
+        "ImageId"  : { "Fn::FindInMap" : [ "mapConfig" , "WebNode", "LinuxAmi" ] },
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -xe\n",
+          "yum update -y aws-cfn-bootstrap\n",
+
+          "/opt/aws/bin/cfn-init -v ",
+          "         --stack ", { "Ref" : "AWS::StackId" },
+          "         --resource Ec2Instance ",
+          "         --configsets full_install ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+          "/opt/aws/bin/cfn-signal -e $? ",
+          "         --stack ", { "Ref" : "AWS::StackId" },
+          "         --resource Ec2Instance ",
+          "         --region ", { "Ref" : "AWS::Region" }, "\n"
+        ]]}}
+      }
+    },
+
+    "WebSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable SSH access via port 22",
+        "SecurityGroupIngress" : [ {
+          "IpProtocol" : "tcp",
+          "FromPort" : "22",
+          "ToPort" : "22",
+          "CidrIp" : "0.0.0.0/0"
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : "80",
+          "ToPort" : "80",
+          "CidrIp" : "0.0.0.0/0"
+        },
+        {
+          "IpProtocol" : "tcp",
+          "FromPort" : "443",
+          "ToPort" : "443",
+          "CidrIp" : "0.0.0.0/0"
+        }
+        ]
+      }
+    }
+  },
+
+  "Outputs" : {
+
+    "PublicIp" : {
+      "Description" : "The public IP of the EC2 instance",
+      "Value" : { "Fn::GetAtt" : [ "Ec2Instance" , "PublicIp" ] }
+    },
+
+    "PublicDns" : {
+      "Description" : "The public DNS of the EC2 instance",
+      "Value" : { "Fn::GetAtt" : [ "Ec2Instance" , "PublicDnsName" ] }
+    }
+  }
+
+}
