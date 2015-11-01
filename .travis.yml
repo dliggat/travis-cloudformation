@@ -8,5 +8,5 @@ script:
 deploy:
   provider: script
   script: deploy.sh
-  on:
-    branch: release
+  # on:
+  #   branch: release
