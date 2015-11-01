@@ -3,7 +3,7 @@ import json
 import unittest
 
 
-class TestJsonParse(unittest.TestCase):
+class TestJsonValidator(unittest.TestCase):
 
     TEMPLATES = 'templates/*.template'
 
