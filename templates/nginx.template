@@ -11,7 +11,7 @@
       "InstanceType" : {
         "Type" : "String",
         "Default" : "m3.medium",
-        "Description" : "Instance type."
+        "Description" : "My instance type"
       },
       "InstanceName" : {
         "Type" : "String",
