@@ -1,12 +1,13 @@
 language: python
 python:
   - "2.7"
-before_deploy:
-  - pip install -r requirements.txt
 script:
   - python test.py
+before_deploy:
+  - pip install -r requirements.txt
 deploy:
   provider: script
   script: "aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION"
+  # put commit hash into file
   on:
     branch: release
