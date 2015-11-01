@@ -8,5 +8,5 @@ script:
 deploy:
   provider: script
   script: "aws s3 sync templates/ s3://$CF_S3_BUCKET --delete --region $AWS_REGION"
-  # on:
-  #   branch: release
+  on:
+    branch: release
