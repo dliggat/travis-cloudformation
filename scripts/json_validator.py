@@ -31,8 +31,8 @@ class TestJsonValidator(unittest.TestCase):
                 self.assertEqual(data['AWSTemplateFormatVersion'], '2010-09-09')
 
                 # Examine the CloudFormation 'Outputs' - expect these keys.
-                self.assertItemsEqual(data['Outputs'].keys(),
-                                      ['PublicIp', 'PublicDns'])
+                self.assertItemsEqual(data['Outputs'].keys(), ['PublicIp',
+                                                               'PublicDns'])
 
 
 if __name__ == '__main__':
