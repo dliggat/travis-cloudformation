@@ -11,8 +11,8 @@ before_deploy:
 deploy:
   provider: script
   script: scripts/deploy.sh
-  on:
-    branch: release
+  # on:
+  #   branch: release
 
 # Notify.
 notifications:
