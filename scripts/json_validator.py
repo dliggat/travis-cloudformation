@@ -20,19 +20,24 @@ class TestJsonValidator(unittest.TestCase):
                 data = json.load(data_file)
 
                 # Look for the top level keys.
-                self.assertItemsEqual(data.keys(), ['AWSTemplateFormatVersion',
-                                                    'Parameters',
-                                                    'Description',
-                                                    'Outputs',
-                                                    'Resources',
-                                                    'Mappings'])
+                for key in ['AWSTemplateFormatVersion',
+                            'Parameters',
+                            'Description',
+                            'Outputs',
+                            'Resources',
+                            'Mappings']:
+                    self.assertTrue(key in data.keys())
 
                 # Look for the 'AWSTemplateFormatVersion' key.
                 self.assertEqual(data['AWSTemplateFormatVersion'], '2010-09-09')
 
                 # Examine the CloudFormation 'Outputs' - expect these keys.
-                self.assertItemsEqual(data['Outputs'].keys(), ['PublicIp',
-                                                               'PublicDns'])
+                if template == 'templates/nginx.template':
+                    self.assertItemsEqual(data['Outputs'].keys(), ['PublicIp',
+                                                                   'PublicDns'])
+
+                if template == 'templates/rails.template':
+                    self.assertItemsEqual(data['Outputs'].keys(), ['WebsiteURL'])
 
 
 if __name__ == '__main__':
